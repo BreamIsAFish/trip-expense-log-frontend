@@ -14,11 +14,15 @@ export function useAuth() {
   const loginMutation = useMutation({
     mutationFn: async () => {
       const liff = getLiff();
+      console.log("liff.isLoggedIn()", liff.isLoggedIn());
       if (!liff.isLoggedIn()) {
         liff.login();
-        throw new Error("redirecting");
+        // throw new Error("redirecting");
       }
+      console.log("passed login");
       const lineAccessToken = liff.getAccessToken();
+      // const lineAccessToken = liff.getAccessToken();
+      console.log("profile", await liff.getProfile());
       if (!lineAccessToken) {
         throw new Error("No LINE access token");
       }

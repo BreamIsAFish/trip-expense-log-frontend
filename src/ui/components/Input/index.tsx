@@ -13,14 +13,14 @@ export const Input: FC<InputProps> = ({
   return (
     <label className={`flex flex-col gap-1 text-sm ${className}`}>
       {label ? (
-        <span className="font-medium text-slate-200">{label}</span>
+        <span className="font-medium text-stone-600">{label}</span>
       ) : null}
       <input
         id={inputId}
-        className="rounded-md border border-slate-600/80 bg-slate-900/70 px-3 py-2 text-slate-100 outline-none ring-cyan-500/40 focus:border-cyan-500/60 focus:ring-2"
+        className="rounded-md border border-violet-200/80 bg-white px-3 py-2 text-stone-800 outline-none ring-brand-500/25 focus:border-brand-500/50 focus:ring-2"
         {...rest}
       />
-      {error ? <span className="text-xs text-red-400">{error}</span> : null}
+      {error ? <span className="text-xs text-rose-600">{error}</span> : null}
     </label>
   );
 };

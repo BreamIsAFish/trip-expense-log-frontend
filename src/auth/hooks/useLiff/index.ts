@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import {
-  getLiff,
-  getLiffId,
-  initLiff,
-  resetLiffInit,
-} from "@/auth/services/liffService";
+import { getLiff, initLiff, resetLiffInit } from "@/auth/services/liffService";
 
 export interface UseLiffState {
   ready: boolean;
@@ -20,31 +15,42 @@ export function useLiff(): UseLiffState & { retry: () => void } {
   const [attempt, setAttempt] = useState(0);
 
   const run = useCallback(() => {
-    let cancelled = false;
+    // let cancelled = false;
     (async () => {
       try {
-        if (!import.meta.env.VITE_LIFF_ID) {
-          throw new Error("Missing VITE_LIFF_ID");
-        }
-        getLiffId();
-        await initLiff();
-        if (cancelled) {
-          return;
-        }
-        const liff = getLiff();
-        setInClient(liff.isInClient());
-        setReady(true);
-        setError(null);
+        // console.log("initLiff");
+        await initLiff(
+          () => {
+            console.log("initLiff done");
+
+            const liff = getLiff();
+            setInClient(liff.isInClient());
+            setReady(true);
+            setError(null);
+          },
+          (error) => {
+            // console.error(error);
+            setError(
+              error instanceof Error ? error.message : "LIFF init failed",
+            );
+            setReady(false);
+          },
+        );
+        // if (cancelled) {
+        //   return;
+        // }
+        // console.log("initLiff done");
       } catch (e) {
-        if (!cancelled) {
-          setError(e instanceof Error ? e.message : "LIFF init failed");
-          setReady(false);
-        }
+        // if (!cancelled) {
+        // setError(e instanceof Error ? e.message : "LIFF init failed");
+        // setReady(false);
+        console.error(e);
       }
+      // }
     })();
-    return () => {
-      cancelled = true;
-    };
+    // return () => {
+    //   cancelled = true;
+    // };
   }, []);
 
   useEffect(() => {

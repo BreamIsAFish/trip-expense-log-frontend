@@ -14,11 +14,15 @@ export function getLiffId(): string {
   return id;
 }
 
-export async function initLiff(): Promise<void> {
+export async function initLiff(
+  onSuccess: () => void,
+  onError: (error: Error) => void,
+): Promise<void> {
   if (initPromise) {
     return initPromise;
   }
-  initPromise = liff.init({ liffId: getLiffId() });
+  // console.log("initLiff start", getLiffId());
+  initPromise = liff.init({ liffId: getLiffId() }, onSuccess, onError);
   return initPromise;
 }
 

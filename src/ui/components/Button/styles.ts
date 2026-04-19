@@ -2,10 +2,11 @@ import type { ButtonVariant } from "./types";
 
 export const buttonVariantClass: Record<ButtonVariant, string> = {
   primary:
-    "bg-cyan-600 hover:bg-cyan-500 text-white shadow-sm border border-cyan-500/40",
+    "bg-brand-600 hover:bg-brand-500 text-white shadow-sm border border-brand-500/35",
   secondary:
-    "bg-slate-800/80 hover:bg-slate-700 text-slate-100 border border-slate-600/60",
+    "bg-white hover:bg-violet-50/80 text-stone-700 border border-violet-200/80 shadow-sm",
   ghost:
-    "bg-transparent hover:bg-slate-800/60 text-slate-100 border border-transparent",
-  danger: "bg-red-600/90 hover:bg-red-500 text-white border border-red-500/40",
+    "bg-transparent hover:bg-violet-100/50 text-stone-600 border border-transparent",
+  danger:
+    "bg-rose-400/95 hover:bg-rose-400 text-white border border-rose-300/60 shadow-sm",
 };

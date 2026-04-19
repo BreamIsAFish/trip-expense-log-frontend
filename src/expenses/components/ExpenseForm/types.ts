@@ -1,16 +1,13 @@
 import type { ExpenseResponse } from "@/expenses/types";
-import type { TripMemberBrief } from "@/trips/types";
+import type { UnauthorizedUserBrief, TripMemberBrief } from "@/trips/types";
+
+import type { CreateUpdateExpenseBody } from "@/expenses/services/expenseService";
 
 export interface ExpenseFormProps {
   members: TripMemberBrief[];
-  initial?: ExpenseResponse | null;
+  unauthorizedUsers: UnauthorizedUserBrief[];
+  initial: ExpenseResponse | null;
   submitLabel: string;
-  pending?: boolean;
-  onSubmit: (values: {
-    name: string;
-    description: string;
-    amount: string;
-    payer_id: string;
-    participant_ids: string[];
-  }) => void;
+  pending: boolean;
+  onSubmit: (values: CreateUpdateExpenseBody) => void;
 }

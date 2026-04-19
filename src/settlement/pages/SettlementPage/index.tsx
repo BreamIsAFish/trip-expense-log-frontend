@@ -16,12 +16,12 @@ export function SettlementPage() {
         <div>
           <Link
             to={`/trips/${tripId}`}
-            className="text-sm text-cyan-400 hover:text-cyan-300"
+            className="text-sm text-brand-700 hover:text-brand-600"
           >
             ← Back to trip
           </Link>
-          <h1 className="mt-2 text-2xl font-bold text-slate-50">Settlement</h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <h1 className="mt-2 text-2xl font-bold text-stone-800">Settlement</h1>
+          <p className="mt-1 text-sm text-stone-500">
             Who should pay whom to settle shared costs.
           </p>
         </div>
@@ -29,7 +29,7 @@ export function SettlementPage() {
         {isLoading ? (
           <Loading label="Calculating…" />
         ) : error ? (
-          <p className="text-red-400">
+          <p className="text-rose-600">
             {error instanceof Error ? error.message : "Could not load summary"}
           </p>
         ) : data ? (

@@ -20,8 +20,8 @@ export function TripListPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-sm text-slate-400">Signed in as</p>
-            <p className="font-medium text-slate-100">
+            <p className="text-sm text-stone-500">Signed in as</p>
+            <p className="font-medium text-stone-800">
               {user?.display_name ?? "—"}
             </p>
           </div>
@@ -33,7 +33,7 @@ export function TripListPage() {
         {isLoading ? (
           <Loading label="Loading trips…" />
         ) : error ? (
-          <p className="text-red-400">
+          <p className="text-rose-600">
             {error instanceof Error ? error.message : "Failed to load trips"}
           </p>
         ) : (

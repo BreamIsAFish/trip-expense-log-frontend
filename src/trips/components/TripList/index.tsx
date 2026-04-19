@@ -10,7 +10,7 @@ import { TripGrid } from "./styles";
 export const TripList: FC<TripListProps> = ({ trips, onCreate, onJoin }) => (
   <div className="space-y-6">
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <h1 className="text-2xl font-bold text-slate-50">Your trips</h1>
+      <h1 className="text-2xl font-bold text-stone-800">Your trips</h1>
       <div className="flex flex-wrap gap-2">
         <Button variant="secondary" type="button" onClick={onJoin}>
           Join trip
@@ -21,7 +21,7 @@ export const TripList: FC<TripListProps> = ({ trips, onCreate, onJoin }) => (
       </div>
     </div>
     {trips.length === 0 ? (
-      <p className="rounded-lg border border-dashed border-slate-600/60 bg-slate-900/40 p-8 text-center text-slate-400">
+      <p className="rounded-lg border border-dashed border-violet-200/90 bg-white/70 p-8 text-center text-stone-500 shadow-sm">
         No trips yet. Create one or join with an invite code.
       </p>
     ) : (

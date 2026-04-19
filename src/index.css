@@ -2,9 +2,9 @@
 
 @theme {
   --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  --color-brand-500: #06b6d4;
-  --color-brand-600: #0891b2;
-  --color-brand-700: #0e7490;
+  --color-brand-500: #9b8ad4;
+  --color-brand-600: #7c6bbf;
+  --color-brand-700: #6554a8;
 }
 
 body {
@@ -12,6 +12,8 @@ body {
   min-height: 100vh;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  background-color: #f9f7ff;
+  color: #1e1b2e;
 }
 
 #root {

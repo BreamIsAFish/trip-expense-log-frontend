@@ -20,12 +20,9 @@ export async function createTrip(body: {
   return data;
 }
 
-export async function joinTrip(
-  tripId: string,
-  inviteCode: string,
-): Promise<void> {
-  await apiClient.post(`/trips/${tripId}/join`, {
-    invite_code: inviteCode,
+export async function joinTripByInviteCode(inviteCode: string): Promise<void> {
+  await apiClient.post("/trips/join", {
+    invite_code: inviteCode.trim(),
   });
 }
 

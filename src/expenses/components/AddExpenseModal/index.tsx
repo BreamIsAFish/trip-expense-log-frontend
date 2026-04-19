@@ -13,6 +13,7 @@ export const AddExpenseModal: FC<AddExpenseModalProps> = ({
   onClose,
   tripId,
   members,
+  unauthorizedUsers,
   expense,
   mode,
 }) => {
@@ -37,6 +38,7 @@ export const AddExpenseModal: FC<AddExpenseModalProps> = ({
       <ExpenseForm
         key={mode === "edit" ? (expense?.id ?? "edit") : "create"}
         members={members}
+        unauthorizedUsers={unauthorizedUsers}
         initial={mode === "edit" ? expense ?? null : null}
         submitLabel={mode === "create" ? "Add expense" : "Save changes"}
         pending={pending}
@@ -52,7 +54,7 @@ export const AddExpenseModal: FC<AddExpenseModalProps> = ({
         }}
       />
       {mutationError ? (
-        <p className="mt-3 text-sm text-red-400">
+        <p className="mt-3 text-sm text-rose-600">
           {mutationError instanceof Error
             ? mutationError.message
             : "Request failed"}

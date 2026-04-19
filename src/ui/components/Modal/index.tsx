@@ -9,6 +9,7 @@ export const Modal: FC<ModalProps> = ({
   onClose,
   children,
   footer,
+  dialogClassName = "max-w-lg",
 }) => {
   useEffect(() => {
     if (!open) {
@@ -29,28 +30,36 @@ export const Modal: FC<ModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/25 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className="w-full max-w-lg rounded-xl border border-slate-600/50 bg-slate-900/95 p-5 shadow-2xl">
-        <div className="mb-4 flex items-start justify-between gap-3">
-          <h2 id="modal-title" className="text-lg font-semibold text-slate-50">
-            {title}
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-md px-2 py-1 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-100"
-          >
-            ✕
-          </button>
+      <div className="flex min-h-full items-end justify-center pb-6 sm:items-center sm:pb-4">
+        <div
+          className={`my-auto flex min-h-0 w-full ${dialogClassName} max-h-[min(90dvh,calc(100vh-2rem))] flex-col rounded-xl border border-violet-200/90 bg-white shadow-xl shadow-violet-900/10`}
+        >
+          <div className="flex shrink-0 items-start justify-between gap-3 border-b border-violet-100/80 p-5 pb-4">
+            <h2 id="modal-title" className="text-lg font-semibold text-stone-800">
+              {title}
+            </h2>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-md px-2 py-1 text-sm text-stone-400 hover:bg-violet-50 hover:text-stone-700"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4 text-stone-700">
+            {children}
+          </div>
+          {footer ? (
+            <div className="flex shrink-0 flex-wrap justify-end gap-2 border-t border-violet-100/80 p-5 pt-4">
+              {footer}
+            </div>
+          ) : null}
         </div>
-        <div className="text-slate-200">{children}</div>
-        {footer ? (
-          <div className="mt-6 flex flex-wrap justify-end gap-2">{footer}</div>
-        ) : null}
       </div>
     </div>
   );

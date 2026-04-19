@@ -17,6 +17,11 @@ export interface TripMemberBrief {
   joined_at: string;
 }
 
+export interface UnauthorizedUserBrief {
+  id: UuidString;
+  display_name: string;
+}
+
 export interface TripDetailResponse extends TripResponse {
   members: TripMemberBrief[];
 }

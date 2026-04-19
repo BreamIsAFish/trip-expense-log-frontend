@@ -6,8 +6,39 @@ import type { ExpenseFormProps } from "./types";
 import { Input } from "@/ui/components/Input";
 import { Button } from "@/ui/components/Button";
 
+import { keysToCreateBody } from "@/expenses/utils/expensePayload";
+
+function keysFromExpense(
+  expense: NonNullable<ExpenseFormProps["initial"]>,
+): string[] {
+  if (!expense?.participants?.length) {
+    return [];
+  }
+  return expense.participants.map((p) =>
+    p.type === "user" && p.user_id
+      ? `u:${p.user_id}`
+      : `au:${p.unauthorized_user_id ?? ""}`,
+  );
+}
+
+function payerKeyFromExpense(
+  expense: NonNullable<ExpenseFormProps["initial"]>,
+): string {
+  if (expense.payer_type === "user" && expense.payer_id) {
+    return `u:${expense.payer_id}`;
+  }
+  if (
+    expense.payer_type === "unauthorized_user" &&
+    expense.payer_unauthorized_user_id
+  ) {
+    return `au:${expense.payer_unauthorized_user_id}`;
+  }
+  return "";
+}
+
 export const ExpenseForm: FC<ExpenseFormProps> = ({
   members,
+  unauthorizedUsers,
   initial,
   submitLabel,
   pending,
@@ -16,10 +47,18 @@ export const ExpenseForm: FC<ExpenseFormProps> = ({
   const [name, setName] = useState(initial?.name ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [amount, setAmount] = useState(initial?.amount ?? "");
-  const [payerId, setPayerId] = useState(initial?.payer_id ?? "");
-  const [participantIds, setParticipantIds] = useState<string[]>(
-    initial?.participant_ids ?? (members[0] ? [members[0].user_id] : []),
-  );
+  const [payerKey, setPayerKey] = useState(() => {
+    if (initial) {
+      return payerKeyFromExpense(initial);
+    }
+    return members[0] ? `u:${members[0].user_id}` : "";
+  });
+  const [participantKeys, setParticipantKeys] = useState<string[]>(() => {
+    if (initial) {
+      return keysFromExpense(initial);
+    }
+    return members[0] ? [`u:${members[0].user_id}`] : [];
+  });
   const [formError, setFormError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -27,20 +66,20 @@ export const ExpenseForm: FC<ExpenseFormProps> = ({
       setName(initial.name);
       setDescription(initial.description);
       setAmount(initial.amount);
-      setPayerId(initial.payer_id);
-      setParticipantIds(initial.participant_ids);
+      setPayerKey(payerKeyFromExpense(initial));
+      setParticipantKeys(keysFromExpense(initial));
     } else {
       setName("");
       setDescription("");
       setAmount("");
-      setPayerId(members[0]?.user_id ?? "");
-      setParticipantIds(members[0] ? [members[0].user_id] : []);
+      setPayerKey(members[0] ? `u:${members[0].user_id}` : "");
+      setParticipantKeys(members[0] ? [`u:${members[0].user_id}`] : []);
     }
   }, [initial, members]);
 
-  const toggleParticipant = (id: string) => {
-    setParticipantIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+  const toggleKey = (key: string) => {
+    setParticipantKeys((prev) =>
+      prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key],
     );
   };
 
@@ -50,8 +89,8 @@ export const ExpenseForm: FC<ExpenseFormProps> = ({
       name,
       description,
       amount,
-      payer_id: payerId,
-      participant_ids: participantIds,
+      payerKey,
+      participantKeys,
     };
     const err = validateExpenseForm(values);
     if (err) {
@@ -59,7 +98,7 @@ export const ExpenseForm: FC<ExpenseFormProps> = ({
       return;
     }
     setFormError(null);
-    onSubmit(values);
+    onSubmit(keysToCreateBody(name, description, amount, payerKey, participantKeys));
   };
 
   return (
@@ -88,43 +127,94 @@ export const ExpenseForm: FC<ExpenseFormProps> = ({
       />
 
       <div className="flex flex-col gap-1 text-sm">
-        <span className="font-medium text-slate-200">Paid by</span>
+        <span className="font-medium text-stone-600">Paid by</span>
         <select
-          name="payer_id"
-          className="rounded-md border border-slate-600/80 bg-slate-900/70 px-3 py-2 text-slate-100"
-          value={payerId}
-          onChange={(e) => setPayerId(e.target.value)}
+          name="payer"
+          className="rounded-md border border-violet-200/80 bg-white px-3 py-2 text-stone-800"
+          value={payerKey}
+          onChange={(e) => setPayerKey(e.target.value)}
         >
-          <option value="">Select member</option>
-          {members.map((m) => (
-            <option key={m.user_id} value={m.user_id}>
-              {m.display_name}
-            </option>
-          ))}
+          <option value="">Select payer</option>
+          <optgroup label="Trip members">
+            {members.map((m) => (
+              <option key={m.user_id} value={`u:${m.user_id}`}>
+                {m.display_name}
+              </option>
+            ))}
+          </optgroup>
+          {unauthorizedUsers.length ? (
+            <optgroup label="Not in app">
+              {unauthorizedUsers.map((u) => (
+                <option key={u.id} value={`au:${u.id}`}>
+                  {u.display_name}
+                </option>
+              ))}
+            </optgroup>
+          ) : null}
         </select>
       </div>
 
       <div className="flex flex-col gap-2 text-sm">
-        <span className="font-medium text-slate-200">Split between</span>
-        <div className="flex flex-col gap-2 rounded-md border border-slate-600/50 p-3">
-          {members.map((m) => (
-            <label
-              key={m.user_id}
-              className="flex cursor-pointer items-center gap-2 text-slate-300"
-            >
-              <input
-                type="checkbox"
-                checked={participantIds.includes(m.user_id)}
-                onChange={() => toggleParticipant(m.user_id)}
-              />
-              {m.display_name}
-            </label>
-          ))}
+        <span className="font-medium text-stone-600">Split between</span>
+        <p className="text-xs text-stone-500">
+          Choose who owes a share of this expense. The payer does not have to be
+          included.
+        </p>
+        <div className="flex flex-col gap-3 rounded-md border border-violet-200/70 bg-violet-50/30 p-3">
+          <div>
+            <span className="text-xs font-semibold uppercase text-stone-500">
+              Trip members
+            </span>
+            <div className="mt-2 flex flex-col gap-2">
+              {members.map((m) => {
+                const key = `u:${m.user_id}`;
+                return (
+                  <label
+                    key={m.user_id}
+                    className="flex cursor-pointer items-center gap-2 text-stone-700"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={participantKeys.includes(key)}
+                      onChange={() => toggleKey(key)}
+                    />
+                    {m.display_name}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+          {unauthorizedUsers.length ? (
+            <div>
+              <span className="text-xs font-semibold uppercase text-stone-500">
+                Not in app
+              </span>
+              <div className="mt-2 flex flex-col gap-2">
+                {unauthorizedUsers.map((u) => {
+                  const key = `au:${u.id}`;
+                  return (
+                    <label
+                      key={u.id}
+                      className="flex cursor-pointer items-center gap-2 text-stone-700"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={participantKeys.includes(key)}
+                        onChange={() => toggleKey(key)}
+                      />
+                      {u.display_name}
+                      <span className="text-xs text-stone-400">(name only)</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 
       {formError ? (
-        <p className="text-sm text-red-400">{formError}</p>
+        <p className="text-sm text-rose-600">{formError}</p>
       ) : null}
 
       <Button type="submit" fullWidth disabled={pending}>

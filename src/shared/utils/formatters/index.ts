@@ -1,4 +1,4 @@
-export function formatCurrency(amount: string, currency = "USD"): string {
+export function formatCurrency(amount: string, currency = "THB"): string {
   const n = Number.parseFloat(amount);
   if (Number.isNaN(n)) {
     return amount;

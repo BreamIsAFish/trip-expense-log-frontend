@@ -66,7 +66,7 @@ export const CreateTripModal: FC<CreateTripModalProps> = ({ open, onClose }) => 
           onChange={(e) => setDescription(e.target.value)}
         />
         {createTrip.error ? (
-          <p className="text-sm text-red-400">
+          <p className="text-sm text-rose-600">
             {createTrip.error instanceof Error
               ? createTrip.error.message
               : "Could not create trip"}

@@ -2,13 +2,13 @@ import styled from "styled-components";
 
 export const PageShell = styled.div`
   min-height: 100vh;
-  background: linear-gradient(160deg, #0f172a 0%, #164e63 45%, #0f172a 100%);
-  color: #f8fafc;
+  background: linear-gradient(165deg, #f9f7ff 0%, #f0ecfc 40%, #e8f4f2 100%);
+  color: #1e1b2e;
 `;
 
 export const Card = styled.div`
-  background: rgba(15, 23, 42, 0.65);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: #ffffff;
+  border: 1px solid #e8e4f0;
   border-radius: 0.75rem;
-  backdrop-filter: blur(8px);
+  box-shadow: 0 1px 3px rgba(30, 27, 46, 0.06);
 `;

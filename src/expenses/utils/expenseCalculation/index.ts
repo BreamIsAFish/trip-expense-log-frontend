@@ -9,7 +9,7 @@ export function sumExpenseAmounts(expenses: ExpenseResponse[]): number {
 
 export function sharePerParticipant(expense: ExpenseResponse): number {
   const n = Number.parseFloat(expense.amount);
-  const count = expense.participant_ids.length || 1;
+  const count = expense.participants.length || 1;
   if (Number.isNaN(n)) {
     return 0;
   }

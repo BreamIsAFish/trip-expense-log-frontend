@@ -10,20 +10,18 @@ import { isNonEmptyString } from "@/shared/utils/validators";
 import type { JoinTripModalProps } from "./types";
 
 export const JoinTripModal: FC<JoinTripModalProps> = ({ open, onClose }) => {
-  const [tripId, setTripId] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const joinTrip = useJoinTrip();
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!isNonEmptyString(tripId) || !isNonEmptyString(inviteCode)) {
+    if (!isNonEmptyString(inviteCode)) {
       return;
     }
     joinTrip.mutate(
-      { tripId: tripId.trim(), inviteCode: inviteCode.trim() },
+      { inviteCode: inviteCode.trim() },
       {
         onSuccess: () => {
-          setTripId("");
           setInviteCode("");
           onClose();
         },
@@ -52,16 +50,9 @@ export const JoinTripModal: FC<JoinTripModalProps> = ({ open, onClose }) => {
       }
     >
       <form id="join-trip-form" className="space-y-4" onSubmit={onSubmit}>
-        <p className="text-sm text-slate-400">
-          Enter the trip ID and invite code shared by the organizer.
+        <p className="text-sm text-stone-500">
+          Enter the invite code shared by the organizer.
         </p>
-        <Input
-          label="Trip ID"
-          name="tripId"
-          value={tripId}
-          onChange={(e) => setTripId(e.target.value)}
-          required
-        />
         <Input
           label="Invite code"
           name="inviteCode"
@@ -70,7 +61,7 @@ export const JoinTripModal: FC<JoinTripModalProps> = ({ open, onClose }) => {
           required
         />
         {joinTrip.error ? (
-          <p className="text-sm text-red-400">
+          <p className="text-sm text-rose-600">
             {joinTrip.error instanceof Error
               ? joinTrip.error.message
               : "Could not join trip"}
