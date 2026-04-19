@@ -1,4 +1,5 @@
 import type { ExpenseStreamPayload } from "@/expenses/types";
+import { handleSessionExpired } from "@/auth/session/handleSessionExpired";
 import { getApiBaseUrl } from "@/shared/api/baseUrl";
 
 /**
@@ -49,6 +50,10 @@ export function streamTripExpenses(
     },
     signal,
   }).then(async (res) => {
+    if (res.status === 401) {
+      handleSessionExpired();
+      throw new Error(`SSE failed: ${res.status}`);
+    }
     if (!res.ok || !res.body) {
       throw new Error(`SSE failed: ${res.status}`);
     }

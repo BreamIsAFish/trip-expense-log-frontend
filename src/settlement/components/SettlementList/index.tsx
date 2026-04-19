@@ -1,20 +1,10 @@
 import type { FC } from "react";
 
 import { PaymentCard } from "@/settlement/components/PaymentCard";
-import type { SettlementResponse } from "@/settlement/types";
+import type { MemberExpenseTotal, SettlementResponse } from "@/settlement/types";
 import { formatCurrency } from "@/shared/utils/formatters";
 
 import { Stack } from "./styles";
-
-function balanceKey(b: SettlementResponse["balances"][0]): string {
-  if (b.kind === "user" && b.user_id) {
-    return `u:${b.user_id}`;
-  }
-  if (b.kind === "unauthorized_user" && b.unauthorized_user_id) {
-    return `au:${b.unauthorized_user_id}`;
-  }
-  return b.display_name;
-}
 
 function paymentKey(
   p: SettlementResponse["payments"][0],
@@ -31,7 +21,14 @@ function paymentKey(
   return `${from}->${to}-${i}`;
 }
 
-export const SettlementList: FC<{ data: SettlementResponse }> = ({ data }) => (
+function memberTotalKey(m: MemberExpenseTotal, i: number): string {
+  return `${m.display_name}-${m.kind}-${i}`;
+}
+
+export const SettlementList: FC<{
+  data: SettlementResponse;
+  memberTotals: MemberExpenseTotal[];
+}> = ({ data, memberTotals }) => (
   <div className="space-y-8">
     <section>
       <h2 className="mb-3 text-lg font-semibold text-stone-800">
@@ -49,21 +46,21 @@ export const SettlementList: FC<{ data: SettlementResponse }> = ({ data }) => (
     </section>
 
     <section>
-      <h2 className="mb-3 text-lg font-semibold text-stone-800">Balances</h2>
+      <h2 className="mb-3 text-lg font-semibold text-stone-800">Total spent</h2>
       <ul className="space-y-2 text-sm text-stone-600">
-        {data.balances.map((b) => (
+        {memberTotals.map((m, i) => (
           <li
-            key={balanceKey(b)}
+            key={memberTotalKey(m, i)}
             className="flex justify-between rounded-md border border-violet-200/80 bg-white px-3 py-2 shadow-sm"
           >
             <span>
-              {b.display_name}
-              {b.kind === "unauthorized_user" ? (
+              {m.display_name}
+              {m.kind === "unauthorized_user" ? (
                 <span className="ml-2 text-xs text-stone-400">(not in app)</span>
               ) : null}
             </span>
             <span className="font-mono font-medium text-brand-700">
-              {formatCurrency(b.balance)}
+              {formatCurrency(String(m.total))}
             </span>
           </li>
         ))}

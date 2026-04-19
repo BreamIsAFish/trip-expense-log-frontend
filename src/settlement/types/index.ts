@@ -27,3 +27,10 @@ export interface SettlementResponse {
   balances: BalanceEntry[];
   payments: PaymentItem[];
 }
+
+/** Sum of expense amounts paid as payer, per trip member (for Settlement UI). */
+export interface MemberExpenseTotal {
+  display_name: string;
+  total: number;
+  kind: PartyKind;
+}
